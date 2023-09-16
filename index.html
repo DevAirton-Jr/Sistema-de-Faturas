@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Dev Airton Jr -->
+<!-- Data de criação do codigo: 12/09/2023 -->
+<!-- Ultima atualização do codigo: 16/09/2023 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sistema de Faturamento</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Faturamento</h1>
+        
+        <!-- Seção para inserção de itens -->
+        <div id="items">
+            <div class="item">
+                <input type="text" placeholder="Nome do item" class="item-name input-field">
+            </div>
+            <div class="item">
+                <input type="number" placeholder="Preço por unidade" class="item-price input-field">
+            </div>
+            <div class="item">
+                <input type="number" placeholder="Quantidade" class="item-quantity input-field">
+            </div>
+            <button onclick="addItem()" class="add-button">Adicionar Item</button>
+        </div>
+        
+        <!-- Seção da fatura -->
+        <div id="invoice" class="invoice-box">
+            <h2>Fatura:</h2>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Quantidade</th>
+                        <th>Preço/Unidade</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="invoice-items">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total a pagar:</td>
+                        <td id="total-amount">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Inclui o arquivo JavaScript que interage com a página -->
+    <script src="script.js"></script>
+</body>
+</html>

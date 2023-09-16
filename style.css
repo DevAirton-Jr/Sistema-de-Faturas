@@ -1,0 +1,76 @@
+body {
+    background-color: #202124;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #ffffff; /* Adicionado para definir a cor do título como branca */
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.input-field {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #182036;
+    color: #ffffff; /* Alterado para definir a cor do texto como branca */
+}
+
+.add-button {
+    background-color: #007acc;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.add-button:hover {
+    background-color: #0056a8;
+}
+
+.invoice-box {
+    background-color: #182036;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    background-color: #384e8b;
+    color: #ffffff; /* Alterado para definir a cor do texto como branca */
+}
+
+tfoot {
+    font-weight: bold;
+}
+
+td:last-child {
+    text-align: right;
+}
