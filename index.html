@@ -1,57 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-<!-- Dev Airton Jr -->
+    
+    <!-- Dev Airton Jr -->
 <!-- Data de criação do codigo: 12/09/2023 -->
-<!-- Ultima atualização do codigo: 16/09/2023 -->
+<!-- Ultima atualização do codigo: 14/04/2025 -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Faturamento | Glass UI</title>
     <link rel="stylesheet" href="style.css">
-    <title>Sistema de Faturamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Sistema de Faturamento</h1>
-        
-        <!-- Seção para inserção de itens -->
-        <div id="items">
-            <div class="item">
-                <input type="text" placeholder="Nome do item" class="item-name input-field">
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="glass-bg"></div> <!-- Novo elemento para efeito de fundo -->
+
+    <main class="container">
+        <header class="app-header">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Sistema de Faturamento</h1>
+            <div class="header-actions">
+                <button onclick="window.location.href='dashboard.html'" class="action-button">
+                    <i class="fas fa-tachometer-alt"></i> Painel
+                </button>
+                <button onclick="logout()" class="logout-button">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
-            <div class="item">
-                <input type="number" placeholder="Preço por unidade" class="item-price input-field">
+        </header>
+
+        <section class="invoice-details glass-card">
+            <h2><i class="fas fa-user-tag"></i> Dados da Fatura</h2>
+            <div class="details-row">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input id="client-name" type="text" placeholder="Nome do Cliente (opcional)" class="input-field small-field">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-calendar-alt input-icon"></i>
+                    <input id="invoice-date" type="date" class="input-field small-field">
+                </div>
             </div>
-            <div class="item">
-                <input type="number" placeholder="Quantidade" class="item-quantity input-field">
+        </section>
+
+        <section id="items" class="form-card glass-card">
+            <h2><i class="fas fa-plus-circle"></i> Adicionar Item</h2>
+            <div class="form-row">
+                <div class="input-group">
+                    <i class="fas fa-tag input-icon"></i>
+                    <input type="text" placeholder="Nome do item" class="item-name input-field">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-dollar-sign input-icon"></i>
+                    <input type="number" placeholder="Preço por unidade" class="item-price input-field">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-cubes input-icon"></i>
+                    <input type="number" placeholder="Quantidade" class="item-quantity input-field">
+                </div>
+                <button class="add-button">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
             </div>
-            <button onclick="addItem()" class="add-button">Adicionar Item</button>
-        </div>
-        
-        <!-- Seção da fatura -->
-        <div id="invoice" class="invoice-box">
-            <h2>Fatura:</h2>
-            <table class="invoice-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Quantidade</th>
-                        <th>Preço/Unidade</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="invoice-items">
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3">Total a pagar:</td>
-                        <td id="total-amount">0.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
-    
-    <!-- Inclui o arquivo JavaScript que interage com a página -->
+        </section>
+
+        <section id="invoice" class="invoice-box glass-card">
+            <div class="invoice-header">
+                <h2><i class="fas fa-file-invoice"></i> Fatura</h2>
+                <div class="invoice-actions">
+                    <button id="generate-pdf" class="action-button">
+                        <i class="fas fa-file-pdf"></i> Gerar PDF
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tag"></i> Nome</th>
+                            <th><i class="fas fa-hashtag"></i> Quantidade</th>
+                            <th><i class="fas fa-dollar-sign"></i> Preço/Unidade</th>
+                            <th><i class="fas fa-calculator"></i> Total</th>
+                            <th><i class="fas fa-cog"></i> Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-items">
+                        <!-- Itens da fatura são inseridos aqui -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">Total a pagar:</td>
+                            <td id="total-amount">R$ 0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('auth');
+            localStorage.removeItem('invoiceItems');
+            localStorage.removeItem('clientName');
+            localStorage.removeItem('invoiceDate');
+            window.location.href = 'login.html';
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
