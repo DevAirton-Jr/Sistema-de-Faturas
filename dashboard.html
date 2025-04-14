@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle | Glass UI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <script>
+        if (localStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <main class="container">
+        <header class="app-header">
+            <h1><i class="fas fa-tachometer-alt"></i> Painel de Controle</h1>
+            <div class="header-actions">
+                <button onclick="window.location.href='index.html'" class="action-button">
+                    <i class="fas fa-file-invoice"></i> Faturas
+                </button>
+                <button onclick="logout()" class="logout-button">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <section class="summary-cards">
+            <div class="glass-card">
+                <h3><i class="fas fa-wallet"></i> Faturamento Mensal</h3>
+                <p id="monthly-total">R$ 0,00</p>
+            </div>
+            
+            <div class="glass-card">
+                <h3><i class="fas fa-boxes"></i> Itens Vendidos</h3>
+                <p id="total-items">0</p>
+            </div>
+            
+            <div class="glass-card">
+                <h3><i class="fas fa-chart-line"></i> Média Diária</h3>
+                <p id="daily-average">R$ 0,00</p>
+            </div>
+            
+            <div class="glass-card">
+                <h3><i class="fas fa-star"></i> Produto Top</h3>
+                <p id="most-sold-product">Nenhum</p>
+            </div>
+        </section>
+
+        <section class="chart-section glass-card">
+            <h2><i class="fas fa-chart-pie"></i> Desempenho</h2>
+            <div class="chart-row">
+                <div class="chart-container">
+                    <canvas id="dailyRevenueChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="productSalesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="recent-invoices glass-card">
+            <h2><i class="fas fa-history"></i> Últimas Faturas</h2>
+            <div class="table-container">
+                <table class="invoice-list">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user"></i> Cliente</th>
+                            <th><i class="fas fa-calendar"></i> Data</th>
+                            <th><i class="fas fa-money-bill-wave"></i> Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-list"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('auth');
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Processar dados
+            const items = JSON.parse(localStorage.getItem('invoiceItems')) || [];
+            const recentInvoices = JSON.parse(localStorage.getItem('recentInvoices')) || [];
+            
+            // Cálculos
+            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+            
+            // Produto mais vendido
+            const productCount = items.reduce((acc, item) => {
+                acc[item.name] = (acc[item.name] || 0) + item.quantity;
+                return acc;
+            }, {});
+            
+            const mostSold = Object.keys(productCount).length 
+                ? Object.entries(productCount).sort((a, b) => b[1] - a[1])[0][0] 
+                : 'Nenhum';
+
+            // Atualizar UI
+            document.getElementById('monthly-total').textContent = total.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            
+            document.getElementById('total-items').textContent = totalItems;
+            document.getElementById('most-sold-product').textContent = mostSold;
+            document.getElementById('daily-average').textContent = (total / 30).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+            // Popular tabela de faturas
+            const invoiceList = document.getElementById('invoice-list');
+            recentInvoices.forEach(invoice => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${invoice.clientName || 'Não informado'}</td>
+                    <td>${invoice.date || new Date().toLocaleDateString()}</td>
+                    <td>${invoice.totalAmount || 'R$ 0,00'}</td>
+                `;
+                invoiceList.appendChild(row);
+            });
+
+            // Gráficos
+            new Chart(document.getElementById('dailyRevenueChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Faturamento Diário',
+                        data: Array(7).fill(total / 7),
+                        borderColor: 'rgba(75, 192, 192, 0.8)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('productSalesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(productCount),
+                    datasets: [{
+                        label: 'Vendas por Produto',
+                        data: Object.values(productCount),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
