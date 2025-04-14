@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso | Glass UI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <script>
+        if (localStorage.getItem('auth') === 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <main class="login-container">
+        <div class="glass-card login-card">
+            <div class="login-header">
+                <i class="fas fa-lock"></i>
+                <h1>Acesso Restrito</h1>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="username" class="input-field" placeholder="Usuário">
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-key input-icon"></i>
+                <input type="password" id="password" class="input-field" placeholder="Senha">
+            </div>
+            
+            <button onclick="login()" class="action-button login-button">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+            
+            <div id="login-error" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Credenciais inválidas</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function login() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const errorEl = document.getElementById('login-error');
+
+            if (user === 'admin' && pass === '1234') {
+                localStorage.setItem('auth', 'true');
+                window.location.href = 'index.html';
+            } else {
+                errorEl.style.display = 'flex';
+                setTimeout(() => errorEl.style.display = 'none', 3000);
+            }
+        }
+
+        // Submit on Enter
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
