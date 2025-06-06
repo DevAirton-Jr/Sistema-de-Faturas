@@ -11,9 +11,6 @@
 - [x] Geração de PDF
 - [x] Dashboard com gráficos
 
-# Demo
-Acesse a demonstração > https://sistemadefaturesweb.netlify.app/login.html
-
 
 Screenshots: 
 ![image](https://github.com/user-attachments/assets/8eb656e2-fd7b-409a-a05b-bcc3c05d0553)
